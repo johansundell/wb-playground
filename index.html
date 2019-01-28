@@ -1,0 +1,53 @@
+<!doctype html>
+<!--
+Copyright 2018 The Go Authors. All rights reserved.
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>Go wasm</title>
+  <script src="wasm_exec.js"></script>
+<script>
+// Polyfill
+if (!WebAssembly.instantiateStreaming) {
+  WebAssembly.instantiateStreaming = async (resp, importObject) => {
+    const source = await (await resp).arrayBuffer();
+    return await WebAssembly.instantiate(source, importObject);
+  };
+}
+
+const go = new Go();
+WebAssembly.instantiateStreaming(fetch("wb-playground"), go.importObject).then(result => {
+  go.run(result.instance);
+});
+</script>
+</head>
+
+<body>
+  <div>
+    <h2 id="init">Loading</h2>
+  </div>
+	<div id="part2" hidden="true">
+    I was clicked <span id="span1">0</span> times<br/>
+	  <button onClick="add1();">Run</button>
+  </div>
+  
+  <div id="part3" hidden="true">
+    Number 1 <input id="num1" type="text"/><br/>
+    Number 2 <input id="num2" type="text"/><br/>
+    Answer: <input id="input1" type="text"/><br/>
+    <button id="button1">Calulate</button>
+  </div>
+  
+  <div id="part4" hidden>
+    Now for AdventOfCode2018, day6 <br/>
+    <button onClick="day6();">Click me to give you the answer</button><br/>
+    <span id="day6"></span>
+  </div>
+
+</body>
+
+</html>
